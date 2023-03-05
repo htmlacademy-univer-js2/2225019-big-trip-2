@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Ксения Голубятникова](https://up.htmlacademy.ru/univer-js2/2/user/2225019).
-* Наставник: [Глеб Клецков](https://htmlacademy.ru/profile/id1487865).
+* Студент: [Ксения Голубятникова](https://up.htmlacademy.ru/univer-js2/2/user/2225019)
+* Наставник: [Глеб Клецков](https://htmlacademy.ru/profile/id1487865)
 
 ---
 
