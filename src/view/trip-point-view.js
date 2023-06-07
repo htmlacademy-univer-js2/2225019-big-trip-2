@@ -7,7 +7,7 @@ const createTripPointTemplate = () => (
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Drive Chamonix</h3>
+    <h3 class="event__title">Drive Vienna</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
@@ -42,7 +42,7 @@ const createTripPointTemplate = () => (
 
 export default class TripPointView {
   getTemplate () {
-    return createTripPointTemplate;
+    return createTripPointTemplate();
   }
 
   getElement() {

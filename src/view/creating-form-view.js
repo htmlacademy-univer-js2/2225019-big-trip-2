@@ -56,11 +56,11 @@ const createCreatingFormTemplate = () => (
         <label class="event__label  event__type-output" for="event-destination-1">
           Flight
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Vienna" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          <option value="Moscow"></option>
+          <option value="Vienna"></option>
+          <option value="London"></option>
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -128,7 +128,7 @@ const createCreatingFormTemplate = () => (
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+        <p class="event__destination-description">Vienna is the capital, largest city, and one of nine states of Austria. Vienna is Austria's most populous city and its primate city, with about two million inhabitants</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
             <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
@@ -146,7 +146,7 @@ const createCreatingFormTemplate = () => (
 
 export default class CreatingFormView {
   getTemplate () {
-    return createCreatingFormTemplate;
+    return createCreatingFormTemplate();
   }
 
   getElement() {
