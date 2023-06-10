@@ -1,9 +1,9 @@
-import MenuView from './view/menu-view.js';
 import FiltersView from './view/filters-view.js';
 import { render } from './render.js';
 import TripEventsPresenter from './presenter/trip-events-presenter.js';
-import PointsModel from './model/point-model.js';
 import { getPoints, getDestinations, getOffersByType } from './mock/point.js';
+import MenuView from './view/menu-view.js';
+import PointsModel from './model/points-model.js';
 
 const siteHeaderElement = document.querySelector('.trip-main');
 const siteMainElement = document.querySelector('.page-main');
