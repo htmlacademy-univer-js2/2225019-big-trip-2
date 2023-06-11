@@ -153,7 +153,6 @@ export default class CreatingFormView {
     if (!this.element){
       this.element = createElement(this.getTemplate());
     }
-
     return this.element;
   }
 
