@@ -8,9 +8,9 @@ const Mode = {
 };
 
 export default class SubsidiaryPresenter {
-  #pointListContainer = null;
-  #previewPointComponent = null;
   #editingPointComponent = null;
+  #previewPointComponent = null;
+  #pointListContainer = null;
   #pointsModel = null;
   #destinations = null;
   #offers = null;
@@ -31,15 +31,15 @@ export default class SubsidiaryPresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
-    const prevPreviewPointComponent = this.#previewPointComponent;
-    const prevEditingPointComponent =  this.#editingPointComponent;
-
     this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
     this.#editingPointComponent = new EditingFormView(point, this.#destinations, this.#offers);
     this.#previewPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#previewPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#editingPointComponent.setPreviewClickHandler(this.#handlePreviewClick);
     this.#editingPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
+
+    const prevPreviewPointComponent = this.#previewPointComponent;
+    const prevEditingPointComponent =  this.#editingPointComponent;
 
     if (prevPreviewPointComponent === null || prevEditingPointComponent === null) {
       render(this.#previewPointComponent, this.#pointListContainer);
@@ -88,8 +88,7 @@ export default class SubsidiaryPresenter {
     this.#mode = Mode.PREVIEW;
   };
 
-  #handlePreviewClick = (evt) => {
-    evt.preventDefault();
+  #handlePreviewClick = () => {
     this.#replaceEditingToPreviewPoint();
   };
 
