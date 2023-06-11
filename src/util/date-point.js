@@ -12,9 +12,9 @@ const duration = (dateFrom, dateTo) => {
   const start = dayjs(dateFrom);
   const end = dayjs(dateTo);
   const difference = end.diff(start, 'minute');
-  const days = Math.floor(difference / TOTAL_DAY_MINUTES_COUNT);
   const restHours = Math.floor((difference - days * TOTAL_DAY_MINUTES_COUNT) / HOUR_MINUTES_COUNT);
   const restMinutes = difference - (days * TOTAL_DAY_MINUTES_COUNT + restHours * HOUR_MINUTES_COUNT);
+  const days = Math.floor(difference / TOTAL_DAY_MINUTES_COUNT);
   const daysOutput = (days) ? `${days}D` : '';
   const hoursOutput = (restHours) ? `${restHours}H` : '';
   const minutesOutput = (restMinutes) ? `${restMinutes}M` : '';
@@ -28,4 +28,11 @@ const getTime = (date) => dayjs(date).format(TIME_FORMAT);
 
 const getDateTime = (date) => dayjs(date).format(DATE_TIME_FORMAT);
 
-export { humanizePointDueDate, duration, getDate, getDateTime, getTime };
+const isPointDatePast = (date) => dayjs().diff(date, 'day') > 0;
+
+const isPointDateFuture = (date) => date.diff(dayjs(), 'day') >= 0;
+
+const isPointDate = (dateFrom, dateTo) => dayjs().diff(dateFrom, 'day') > 0 && dateTo.diff(dayjs(), 'day') > 0;
+
+export { humanizePointDueDate, duration, getDate, getDateTime, getTime,
+  isPointDatePast, isPointDateFuture, isPointDate};
