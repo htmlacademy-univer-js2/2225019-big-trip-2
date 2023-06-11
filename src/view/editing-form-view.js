@@ -153,23 +153,23 @@ export default class EditingFormView extends AbstractView{
     return createEditingPointTemplate(this.#point, this.#destination, this.#offers);
   }
 
-  setPreviewClickHandler = (callback) => {
-    this._callback.previewClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#previewClickHandler);
-  };
-
   #previewClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.previewClick();
   };
 
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.querySelector('form').addEventListener('click', this.#formSubmitHandler);
-  };
-
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this.#point);
+  };
+
+  setPreviewClickHandler = (callback) => {
+    this._callback.previewClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#previewClickHandler);
+  };
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
   };
 }
