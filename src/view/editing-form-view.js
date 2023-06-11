@@ -1,5 +1,5 @@
-import { createElement } from '../render.js';
-import { getDateTime } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { getDateTime } from '../util/date-point.js';
 
 const renderDestinationPictures = (pictures) => {
   let result = '';
@@ -26,7 +26,6 @@ const renderOffers = (allOffers, checkedOffers) => {
   return result;
 };
 
-
 const createEditingPointTemplate = (point, destinations, offers) => {
   const {basePrice, type, destinationId, dateFrom, dateTo, offerIds} = point;
   const allPointTypeOffers = offers.find((offer) => offer.type === type);
@@ -39,6 +38,7 @@ const createEditingPointTemplate = (point, destinations, offers) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event ${type} icon">
           </label>
+
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -82,6 +82,7 @@ const createEditingPointTemplate = (point, destinations, offers) => {
             </fieldset>
           </div>
         </div>
+
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
@@ -93,6 +94,7 @@ const createEditingPointTemplate = (point, destinations, offers) => {
             <option value="Madrid"></option>
           </datalist>
         </div>
+
         <div class="event__field-group  event__field-group--time">
                    <label class="visually-hidden" for="event-start-time-1">From</label>
                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateFrom)}">
@@ -101,6 +103,7 @@ const createEditingPointTemplate = (point, destinations, offers) => {
                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateTo)}">
                  </div>
         <div class="event__field-group  event__field-group--price">
+
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
             &euro;
@@ -113,6 +116,7 @@ const createEditingPointTemplate = (point, destinations, offers) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
+
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -133,31 +137,39 @@ const createEditingPointTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EditingFormView {
-  #element = null;
+export default class EditingFormView extends AbstractView{
   #point = null;
   #destination = null;
   #offers = null;
 
   constructor(point, destination, offers) {
+    super();
     this.#point = point;
-    this.#destination = destination;
     this.#offers = offers;
+    this.#destination = destination;
   }
 
   get template () {
     return createEditingPointTemplate(this.#point, this.#destination, this.#offers);
   }
 
-  get element() {
-    if (!this.#element){
-      this.#element = createElement(this.template);
-    }
+  setPreviewClickHandler = (callback) => {
+    this._callback.previewClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#previewClickHandler);
+  };
 
-    return this.#element;
-  }
+  #previewClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.previewClick();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('click', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 }
