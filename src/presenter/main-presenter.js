@@ -4,7 +4,7 @@ import NoPointView from '../view/no-point-view.js';
 import { updateItem } from '../util/common-elements.js';
 import TripEventsView from "../view/trip-point-view.js";
 import SubsidiaryPresenter from "./subsidiary-presenter.js";
-import { Sorting, sortType } from '../util/sorting.js';
+import { Sorting, sortType } from '../util/sort-type.js';
 
 export default class MainPresenter {
   #tripBox = null;
