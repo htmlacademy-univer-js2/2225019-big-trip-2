@@ -36,6 +36,11 @@ const Price = {
   MAX: 1000
 };
 
+const generatePicture = () => ({
+  src: "http://picsum.photos/248/152?r=${getRandomInteger(PictureNumber.MIN, PictureNumber.MAX)}",
+  description: generateDescription(),
+});
+
 const generateDescription = () => {
   let description = '';
   for (let i = 0; i < getRandomInteger(ElementsCount.MIN, ElementsCount.MAX); i++) {
@@ -43,11 +48,6 @@ const generateDescription = () => {
   }
   return description;
 };
-
-const generatePicture = () => ({
-  src: `http://picsum.photos/248/152?r=${getRandomInteger(PictureNumber.MIN, PictureNumber.MAX)}`,
-  description: generateDescription(),
-});
 
 const generateDestination = (id) => ({
   id,
@@ -90,4 +90,4 @@ const generatePoint = (id) => {
 };
 
 const getPoints = () => Array.from({length: POINTS_COUNT}).map(() => generatePoint()).sort();
-export {getPoints, getDestinations, getOffersByType };
+export {getPoints, getDestinations, getOffersByType, POINT_TYPES};

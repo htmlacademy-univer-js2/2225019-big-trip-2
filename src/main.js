@@ -5,11 +5,9 @@ import FiltersView from './view/filters-view.js';
 import MenuView from './view/menu-view.js';
 import PointsModel from './model/points-model.js';
 import MainPresenter from './presenter/main-presenter.js';
-import SubsidiaryPresenter from './presenter/subsidiary-presenter.js';
 
 const siteHeaderElement = document.querySelector('.trip-main');
 const siteMainElement = document.querySelector('.page-main');
-//const tripPresenter = new TripEventsPresenter(siteMainElement.querySelector('.trip-events'));
 
 const points = getPoints();
 const destinations = getDestinations();
