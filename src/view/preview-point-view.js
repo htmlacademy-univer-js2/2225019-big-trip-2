@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizePointDueDate, duration, getDate, getTime } from '../util/date-point.js';
+import {ennoblePointDate, duration, getDate, getTime } from '../util/date-point.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   let result = '';
@@ -14,8 +14,8 @@ const createPreviewPointTemplate = (point, destinations, offers) => {
   const {basePrice, type, destinationId, isFavorite, dateFrom, dateTo, offerIds} = point;
   const allPointTypeOffers = offers.find((offer) => offer.type === type);
   const eventDuration = duration(dateFrom, dateTo);
-  const startDate = dateFrom !== null ? humanizePointDueDate(dateFrom) : '';
-  const endDate = dateTo !== null ? humanizePointDueDate(dateTo) : '';
+  const startDate = dateFrom !== null ? ennoblePointDate(dateFrom) : '';
+  const endDate = dateTo !== null ? ennoblePointDate(dateTo) : '';
   return (
     `<li class="trip-events__item">
       <div class="event">
