@@ -4,15 +4,14 @@ import NoPointView from '../view/no-point-view.js';
 import { updateItem } from '../util/common-elements.js';
 import TripEventsView from "../view/trip-point-view.js";
 import SubsidiaryPresenter from "./subsidiary-presenter.js";
-import { Sorting } from '../constant.js';
-import { sortPricePoint, sortDayPoint, sortTimePoint } from '../util/date-point.js';
+import { Sorting, sortType } from '../util/sorting.js';
 
 export default class MainPresenter {
   #tripBox = null;
   #pointsModel = null;
   #boardPoints = null;
 
-  #currentSorting = null;
+  #currentSorting = Sorting.DAY;
   #sourcedBoardPoints = [];
   #pointPresenter = new Map();
 
@@ -50,19 +49,10 @@ export default class MainPresenter {
   };
 
   #sortPoint = (sorting) => {
-    switch (sorting) {
-      case Sorting.DAY:
-        this.#boardPoints.sort(sortDayPoint);
-        break;
-      case Sorting.TIME:
-        this.#boardPoints.sort(sortTimePoint);
-        break;
-      case Sorting.PRICE:
-        this.#boardPoints.sort(sortPricePoint);
-        break;
-    }
+    sortType[sorting](this.#boardPoints);
     this.#currentSorting = sorting;
   };
+
 
   #handleSortingChange = (sorting) => {
     if (this.#currentSorting === sorting) {
@@ -75,7 +65,7 @@ export default class MainPresenter {
   };
 
   #renderSort = () => {
-    this.#boardPoints.sort(sortDayPoint);
+    sortType[Sorting.DAY](this.#boardPoints);
     render(this.#sortComponent, this.#tripBox, RenderPosition.AFTERBEGIN);
     this.#sortComponent.setSortingChangeHandler(this.#handleSortingChange);
   };

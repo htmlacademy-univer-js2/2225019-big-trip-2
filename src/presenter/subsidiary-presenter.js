@@ -8,19 +8,19 @@ const Mode = {
 };
 
 export default class SubsidiaryPresenter {
-  #editingPointComponent = null;
+  #point = null;
   #previewPointComponent = null;
-  #pointListContainer = null;
+  #editingPointComponent = null;
   #pointsModel = null;
+  #pointListBox = null;
   #destinations = null;
   #offers = null;
-  #changeData = null;
   #changeMode = null;
-  #point = null;
+  #changeData = null;
   #mode = Mode.PREVIEW;
 
-  constructor(pointListContainer, pointsModel, changeData, changeMode) {
-    this.#pointListContainer = pointListContainer;
+  constructor(pointListBox, pointsModel, changeData, changeMode) {
+    this.#pointListBox = pointListBox;
     this.#pointsModel = pointsModel;
     this.#changeMode = changeMode;
     this.#changeData = changeData;
@@ -31,28 +31,30 @@ export default class SubsidiaryPresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
-    this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
+    const prevEditingPointComponent =  this.#editingPointComponent;
+    const prevPreviewPointComponent = this.#previewPointComponent;
+
     this.#editingPointComponent = new EditingFormView(point, this.#destinations, this.#offers);
+    this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
     this.#previewPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#previewPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#editingPointComponent.setPreviewClickHandler(this.#handlePreviewClick);
     this.#editingPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
 
-    const prevPreviewPointComponent = this.#previewPointComponent;
-    const prevEditingPointComponent =  this.#editingPointComponent;
-
     if (prevPreviewPointComponent === null || prevEditingPointComponent === null) {
-      render(this.#previewPointComponent, this.#pointListContainer);
+      render(this.#previewPointComponent, this.#pointListBox);
       return;
     }
 
-    if (this.#mode === Mode.EDITING) {
-      replace(this.#editingPointComponent, prevEditingPointComponent);
+    switch (this.#mode) {
+      case Mode.PREVIEW:
+        replace(this.#previewPointComponent, prevPreviewPointComponent);
+        break;
+      case Mode.EDITING:
+        replace(this.#editingPointComponent, prevEditingPointComponent);
+        break;
+    }
 
-    if (this.#mode === Mode.PREVIEW) {
-      replace(this.#previewPointComponent, prevPreviewPointComponent);
-    }
-    }
     remove(prevPreviewPointComponent);
     remove(prevEditingPointComponent);
   }
@@ -64,14 +66,16 @@ export default class SubsidiaryPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.PREVIEW) {
-      this.#replaceEditingToPreviewPoint();
+      this.#editingPointComponent.reset(this.#point);
+      this.#replaceEditingPointToPreviewPoint();
     }
   };
 
   #escapeKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this.#replaceEditingToPreviewPoint();
+      this.#editingPointComponent.reset(this.#point);
+      this.#replaceEditingPointToPreviewPoint();
     }
   };
 
@@ -82,19 +86,20 @@ export default class SubsidiaryPresenter {
     this.#mode = Mode.EDITING;
   };
 
-  #replaceEditingToPreviewPoint = () => {
+  #replaceEditingPointToPreviewPoint = () => {
     replace(this.#previewPointComponent, this.#editingPointComponent);
     document.removeEventListener('keydown', this.#escapeKeyDownHandler);
     this.#mode = Mode.PREVIEW;
   };
 
   #handlePreviewClick = () => {
-    this.#replaceEditingToPreviewPoint();
+    this.#editingPointComponent.reset(this.#point);
+    this.#replaceEditingPointToPreviewPoint();
   };
 
   #handleFormSubmit = (point) => {
     this.#changeData(point);
-    this.#replaceEditingToPreviewPoint();
+    this.#replaceEditingPointToPreviewPoint();
   };
 
   #handleFavoriteClick = () => {
@@ -105,3 +110,4 @@ export default class SubsidiaryPresenter {
     this.#replacePreviewPointToEditingPoint();
   };
 }
+
