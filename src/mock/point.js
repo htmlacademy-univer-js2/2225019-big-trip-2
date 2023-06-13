@@ -37,7 +37,7 @@ const Price = {
 };
 
 const generatePicture = () => ({
-  src: "http://picsum.photos/248/152?r=${getRandomInteger(PictureNumber.MIN, PictureNumber.MAX)}",
+  src: `http://picsum.photos/248/152?r=${getRandomInteger(PictureNumber.MIN, PictureNumber.MAX)}`,
   description: generateDescription(),
 });
 
@@ -74,7 +74,7 @@ const getOffersByType = () => Array.from({length: POINT_TYPES.length}).map((valu
 const offersByType = getOffersByType();
 const destinations = getDestinations();
 
-const generatePoint = (id) => {
+const generatePoint = () => {
   const offersByTypePoint = getRandomElement(offersByType);
   const allOfferIdsByTypePoint = offersByTypePoint.offers.map((offer) => offer.id);
   return {

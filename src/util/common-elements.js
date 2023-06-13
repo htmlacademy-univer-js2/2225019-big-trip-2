@@ -22,10 +22,13 @@ const getRandomElement = (elements) => {
   return elements[getRandomInteger(Min, Max)];
 };
 
-const unchangeableValue = (string) => {
-  const capFirstString = string[0].toUpperCase();
-  const restOfString = string.slice(1);
-  return capFirstString + restOfString;
+const legalizeValue = (value) => {
+  if (value === false) {
+    return '';
+  }
+  const capFirstValue = value[0].toUpperCase();
+  const restOfValue = value.slice(1);
+  return capFirstValue + restOfValue;
 };
 
-export { getRandomInteger, updateItem, getRandomElement, unchangeableValue };
+export { getRandomInteger, getRandomElement, legalizeValue };
