@@ -1,58 +1,63 @@
 import { render, replace, remove } from '../framework/render.js';
 import PreviewPointView from '../view/preview-point-view.js';
-import EditingFormView from '../view/editing-form-view.js';
-import { UserAction, UpdateIt } from '../constant.js';
+import MainFormView from '../view/main-form-view.js';
+import { UserAction, UpdateType } from '../constant.js';
 
 const Mode = {
   PREVIEW: 'preview',
   EDITING: 'editing',
 };
 
-export default class SubsidiaryPresenter {
-  #point = null;
+export default class PointPresenter {
+  #pointListContainer = null;
   #previewPointComponent = null;
   #editingPointComponent = null;
   #pointsModel = null;
-  #pointListBox = null;
+  #destinationsModel = null;
+  #offersModel = null;
+
   #destinations = null;
   #offers = null;
-  #changeMode = null;
+
   #changeData = null;
+  #changeMode = null;
+
+  #point = null;
   #mode = Mode.PREVIEW;
 
-  #isNewPoint = false;
-
-  constructor(pointListBox, pointsModel, changeData, changeMode) {
-    this.#pointListBox = pointListBox;
+  constructor({pointListContainer, pointsModel, changeData, changeMode, destinationsModel, offersModel}) {
+    this.#pointListContainer = pointListContainer;
     this.#pointsModel = pointsModel;
-    this.#changeMode = changeMode;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init(point) {
     this.#point = point;
-    this.#destinations = [...this.#pointsModel.destinations];
-    this.#offers = [...this.#pointsModel.offers];
+    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#offers = [...this.#offersModel.offers];
 
-    const prevEditingPointComponent =  this.#editingPointComponent;
     const prevPreviewPointComponent = this.#previewPointComponent;
+    const prevEditingPointComponent =  this.#editingPointComponent;
 
     this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
-    this.#editingPointComponent = new EditingFormView({
+    this.#editingPointComponent = new MainFormView({
       point: point,
       destination: this.#destinations,
       offers: this.#offers,
-      isNewPoint: this.#isNewPoint
+      isNewPoint: false
     });
 
     this.#previewPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#previewPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#editingPointComponent.setPreviewClickHandler(this.#handlePreviewClick);
     this.#editingPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#editingPointComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#editingPointComponent.setResetClickHandler(this.#handleResetClick);
 
     if (prevPreviewPointComponent === null || prevEditingPointComponent === null) {
-      render(this.#previewPointComponent, this.#pointListBox);
+      render(this.#previewPointComponent, this.#pointListContainer);
       return;
     }
 
@@ -104,7 +109,7 @@ export default class SubsidiaryPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_POINT,
-      UpdateIt.PATCH,
+      UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite},
     );
   };
@@ -120,17 +125,18 @@ export default class SubsidiaryPresenter {
   #handleFormSubmit = (point) => {
     this.#changeData(
       UserAction.UPDATE_POINT,
-      UpdateIt.MINOR,
+      UpdateType.MINOR,
       point,
     );
     this.#replaceEditingPointToPreviewPoint();
   };
 
-  #handleDeleteClick = (point) => {
+  #handleResetClick = (point) => {
     this.#changeData(
       UserAction.DELETE_POINT,
-      UpdateIt.MINOR,
+      UpdateType.MINOR,
       point,
     );
   };
 }
+
