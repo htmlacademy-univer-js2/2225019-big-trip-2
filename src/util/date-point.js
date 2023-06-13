@@ -6,27 +6,11 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_TIME_FORMAT = 'DD/MM/YY hh:mm';
 const TIME_FORMAT = 'hh:mm';
 
-const getDays = (days) => {
-  if (!days) {
-    return '';
-  }
-  if (days < 10) {
-    return `0${days}D`;
-  }
-  return `${days}D`;
-};
+const getDays = (days) => days <= 0 ? '' : `${`${days}`.padStart(2, '0')}D`;
 
-const getHours = (days, restHours) => {
-  if (!days && !restHours) {
-    return '';
-  }
-  if(restHours < 10) {
-    return `0${restHours}H`;
-  }
-  return `${restHours}H`;
-};
+const getHours = (days, restHours) => (days <= 0 && restHours <= 0) ? '' : `${`${restHours}`.padStart(2, '0')}H`;
 
-const getMinutes = (restMinutes) => (restMinutes < 10) ? `0${restMinutes}M` : `${restMinutes}M`;
+const getMinutes = (restMinutes) => `${`${restMinutes}`.padStart(2, '0')}M`;
 
 const duration = (dateFrom, dateTo) => {
   const start = dayjs(dateFrom);
@@ -46,9 +30,12 @@ const ennoblePointDate = (date) => dayjs(date).format('DD MMM');
 const getDate = (date) => dayjs(date).format(DATE_FORMAT);
 const getTime = (date) => dayjs(date).format(TIME_FORMAT);
 const getDateTime = (date) => dayjs(date).format(DATE_TIME_FORMAT);
-const isPointDatePast = (date) => dayjs().diff(date, 'day') > 0;
-const isPointDateFuture = (date) => date.diff(dayjs(), 'day') >= 0;
-const isPointDate = (dateFrom, dateTo) => dayjs().diff(dateFrom, 'day') > 0 && dateTo.diff(dayjs(), 'day') > 0;
+const isPointDatePast = (dateTo) => dayjs().diff(dateTo, 'minute') > 0;
+
+const isPointDateFuture = (dateFrom) => dayjs().diff(dateFrom, 'minute') <= 0;
+
+const isPointDate = (dateFrom, dateTo) => dayjs().diff(dateFrom, 'minute') > 0 && dayjs().diff(dateTo, 'minute') < 0;
+
 
 export { ennoblePointDate, duration, getDate, getDateTime, getTime, isPointDatePast, isPointDateFuture,
   isPointDate };
