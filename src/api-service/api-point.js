@@ -7,7 +7,42 @@ export default class ApiPoint extends ApiService {
       .then(ApiService.parseResponse);
   }
 
-  #adaptForServer = (point) => {
+  addPoint = async (point) => {
+    const response = await this._load({
+      url: 'points',
+      method: ApiServiceResponseMethod.POST,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedLine = await ApiService.parseResponse(response);
+
+    return parsedLine;
+  };
+
+  deletePoint = async (point) => {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: ApiServiceResponseMethod.DELETE,
+    });
+
+    return response;
+  };
+
+  updatePoint = async (point) => {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: ApiServiceResponseMethod.PUT,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedLine = await ApiService.parseResponse(response);
+
+    return parsedLine;
+  };
+
+  #adaptToServer = (point) => {
     const adaptedPoint = {...point,
       'base_price': point.basePrice,
       'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
@@ -21,18 +56,5 @@ export default class ApiPoint extends ApiService {
     delete adaptedPoint.isFavorite;
 
     return adaptedPoint;
-  };
-
-  updatePoint = async (point) => {
-    const response = await this._load({
-      url: `points/${point.id}`,
-      method: ApiServiceResponseMethod.PUT,
-      body: JSON.stringify(this.#adaptForServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    });
-
-    const parsedLine = await ApiService.parseResponse(response);
-
-    return parsedLine;
   };
 }

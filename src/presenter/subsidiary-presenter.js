@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
 import PreviewPointView from '../view/preview-point-view.js';
-import MainFormView from '../view/main-form-view.js';
+import PointView from '../view/main-form-view.js';
 import { UserAction, UpdateType } from '../constant.js';
 
 const Mode = {
@@ -12,7 +12,6 @@ export default class PointPresenter {
   #pointListContainer = null;
   #previewPointComponent = null;
   #editingPointComponent = null;
-  #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
 
@@ -25,9 +24,8 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.PREVIEW;
 
-  constructor({pointListContainer, pointsModel, changeData, changeMode, destinationsModel, offersModel}) {
+  constructor({pointListContainer, changeData, changeMode, destinationsModel, offersModel}) {
     this.#pointListContainer = pointListContainer;
-    this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#changeData = changeData;
@@ -43,7 +41,7 @@ export default class PointPresenter {
     const prevEditingPointComponent =  this.#editingPointComponent;
 
     this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
-    this.#editingPointComponent = new MainFormView({
+    this.#editingPointComponent = new PointView({
       point: point,
       destination: this.#destinations,
       offers: this.#offers,
@@ -66,7 +64,8 @@ export default class PointPresenter {
         replace(this.#previewPointComponent, prevPreviewPointComponent);
         break;
       case Mode.EDITING:
-        replace(this.#editingPointComponent, prevEditingPointComponent);
+        replace(this.#previewPointComponent, prevEditingPointComponent);
+        this.#mode = Mode.PREVIEW;
         break;
     }
 
@@ -86,17 +85,40 @@ export default class PointPresenter {
     }
   };
 
-  #replacePreviewPointToEditingPoint = () => {
-    replace(this.#editingPointComponent, this.#previewPointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#changeMode();
-    this.#mode = Mode.EDITING;
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editingPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
   };
 
-  #replaceEditingPointToPreviewPoint = () => {
-    replace(this.#previewPointComponent, this.#editingPointComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = Mode.PREVIEW;
+
+  setAborting = () => {
+    if (this.#mode === Mode.PREVIEW) {
+      this.#previewPointComponent.shake();
+      return;
+    }
+
+    this.#editingPointComponent.shake(this.#resetFormState);
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editingPointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  #resetFormState = () => {
+    this.#editingPointComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
   };
 
   #escKeyDownHandler = (evt) => {
@@ -114,6 +136,19 @@ export default class PointPresenter {
     );
   };
 
+  #replaceEditingPointToPreviewPoint = () => {
+    replace(this.#previewPointComponent, this.#editingPointComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.PREVIEW;
+  };
+
+  #replacePreviewPointToEditingPoint = () => {
+    replace(this.#editingPointComponent, this.#previewPointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
+  };
+
   #handleEditClick = () => {
     this.#replacePreviewPointToEditingPoint();
   };
@@ -128,7 +163,6 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
-    this.#replaceEditingPointToPreviewPoint();
   };
 
   #handleResetClick = (point) => {
@@ -138,5 +172,7 @@ export default class PointPresenter {
       point,
     );
   };
+
+
 }
 

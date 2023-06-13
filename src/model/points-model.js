@@ -27,10 +27,12 @@ export default class PointsModel extends Observable{
       dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       isFavorite: point['is_favorite'],
     };
+
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
     delete adaptedPoint['is_favorite'];
+
     return adaptedPoint;
   };
 
@@ -59,24 +61,34 @@ export default class PointsModel extends Observable{
     }
   };
 
-  addPoint = (updateType, update) => {
-    this.#points.unshift(update);
-
-    this._notify(updateType, update);
+  addPoint = async (updateType, update) => {
+    try {
+      const response = await this.#pointsApiService.addPoint(update);
+      const newPoint = this.#adaptClient(response);
+      this.#points.unshift(newPoint);
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   };
 
-  deletePoint = (updateType, update) => {
+  deletePoint = async (updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      await this.#pointsApiService.deletePoint(update);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   };
+
 }
