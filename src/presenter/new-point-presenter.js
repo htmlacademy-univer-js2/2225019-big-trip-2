@@ -10,6 +10,7 @@ export default class PointNewPresenter {
 
   #destinationsModel = null;
   #offersModel = null;
+
   #destinations = null;
   #offers = null;
 
@@ -30,7 +31,7 @@ export default class PointNewPresenter {
     this.#offers = [...this.#offersModel.offers];
 
     this.#creatingPointComponent = new PointView({
-      destination: this.#destinations,
+      destinations: this.#destinations,
       offers: this.#offers,
       isNewPoint: true
     });
@@ -38,6 +39,7 @@ export default class PointNewPresenter {
     this.#creatingPointComponent.setResetClickHandler(this.#handleResetClick);
 
     render(this.#creatingPointComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
@@ -45,22 +47,13 @@ export default class PointNewPresenter {
     if (this.#creatingPointComponent === null) {
       return;
     }
+
     this.#destroyCallback?.();
+
     remove(this.#creatingPointComponent);
     this.#creatingPointComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.destroy();
-    }
-  };
-
-  #handleResetClick = () => {
-    this.destroy();
   };
 
   #handleFormSubmit = (point) => {
@@ -69,6 +62,17 @@ export default class PointNewPresenter {
       UpdateType.MINOR,
       point,
     );
+  };
+
+  #handleResetClick = () => {
+    this.destroy();
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.destroy();
+    }
   };
 
   setSaving = () => {
@@ -90,5 +94,7 @@ export default class PointNewPresenter {
     });
   };
 }
+
+
 
 
