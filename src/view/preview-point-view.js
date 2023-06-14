@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeDateTime, getDuration, getDate, getTime } from '../util/date-point.js';
 import he from 'he';
-import {humanizeDateTime, duration, getDate, getTime } from '../util/date-point.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
@@ -9,19 +9,19 @@ const renderOffers = (allOffers, checkedOffers) => {
   let result = '';
   allOffers.offers.forEach((offer) => {
     if (checkedOffers.includes(offer.id)) {
-      result = `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
-    }
-  });
+      result = `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>
+&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
+    }});
   return result;
 };
 
 const createPreviewPointTemplate = (point, destinations, allOffers) => {
   const {basePrice, type, destination, isFavorite, dateFrom, dateTo, offers} = point;
   const allPointTypeOffers = allOffers.find((offer) => offer.type === type);
-  const eventDuration = duration(dateFrom, dateTo);
-  const destinationData = destinations.find((item) => item.id === destination);
+  const eventDuration = getDuration(dateFrom, dateTo);
   const startDate = dateFrom !== null ? humanizeDateTime(dateFrom) : '';
   const endDate = dateTo !== null ? humanizeDateTime(dateTo) : '';
+  const destinationData = destinations.find((item) => item.id === destination);
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -39,11 +39,9 @@ const createPreviewPointTemplate = (point, destinations, allOffers) => {
         <p class="event__duration">${eventDuration}</p>
       </div>
       <p class="event__price">
-      &euro;
-      &nbsp;
-      <span class="event__price-value">${basePrice}</span>
+      &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
-      <h4 class="visually-hidden">Offers: </h4>
+      <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         ${renderOffers(allPointTypeOffers, offers)}
       </ul>

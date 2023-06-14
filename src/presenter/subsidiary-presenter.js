@@ -12,16 +12,13 @@ export default class PointPresenter {
   #pointListContainer = null;
   #previewPointComponent = null;
   #editingPointComponent = null;
-  #destinationsModel = null;
-  #offersModel = null;
-
-  #destinations = null;
-  #offers = null;
-
   #changeData = null;
   #changeMode = null;
-
+  #destinationsModel = null;
+  #offersModel = null;
   #point = null;
+  #offers = null;
+  #destinations = null;
   #mode = Mode.PREVIEW;
 
   constructor({pointListContainer, changeData, changeMode, destinationsModel, offersModel}) {
@@ -43,7 +40,7 @@ export default class PointPresenter {
     this.#previewPointComponent = new PreviewPointView(point, this.#destinations, this.#offers);
     this.#editingPointComponent = new PointView({
       point: point,
-      destination: this.#destinations,
+      destinations: this.#destinations,
       offers: this.#offers,
       isNewPoint: false
     });
@@ -73,60 +70,6 @@ export default class PointPresenter {
     remove(prevEditingPointComponent);
   }
 
-  destroy = () => {
-    remove(this.#previewPointComponent);
-    remove(this.#editingPointComponent);
-  };
-
-  resetView = () => {
-    if (this.#mode !== Mode.PREVIEW) {
-      this.#editingPointComponent.reset(this.#point);
-      this.#replaceEditingPointToPreviewPoint();
-    }
-  };
-
-  setSaving = () => {
-    if (this.#mode === Mode.EDITING) {
-      this.#editingPointComponent.updateElement({
-        isDisabled: true,
-        isSaving: true,
-      });
-    }
-  };
-
-
-  setAborting = () => {
-    if (this.#mode === Mode.PREVIEW) {
-      this.#previewPointComponent.shake();
-      return;
-    }
-
-    this.#editingPointComponent.shake(this.#resetFormState);
-  };
-
-  setDeleting = () => {
-    if (this.#mode === Mode.EDITING) {
-      this.#editingPointComponent.updateElement({
-        isDisabled: true,
-        isDeleting: true,
-      });
-    }
-  };
-
-  #resetFormState = () => {
-    this.#editingPointComponent.updateElement({
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    });
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.resetView();
-    }
-  };
 
   #handleFavoriteClick = () => {
     this.#changeData(
@@ -134,19 +77,6 @@ export default class PointPresenter {
       UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite},
     );
-  };
-
-  #replaceEditingPointToPreviewPoint = () => {
-    replace(this.#previewPointComponent, this.#editingPointComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = Mode.PREVIEW;
-  };
-
-  #replacePreviewPointToEditingPoint = () => {
-    replace(this.#editingPointComponent, this.#previewPointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#changeMode();
-    this.#mode = Mode.EDITING;
   };
 
   #handleEditClick = () => {
@@ -173,6 +103,72 @@ export default class PointPresenter {
     );
   };
 
+  destroy = () => {
+    remove(this.#previewPointComponent);
+    remove(this.#editingPointComponent);
+  };
 
+  resetView = () => {
+    if (this.#mode !== Mode.PREVIEW) {
+      this.#editingPointComponent.reset(this.#point);
+      this.#replaceEditingPointToPreviewPoint();
+    }
+  };
+
+  #replacePreviewPointToEditingPoint = () => {
+    replace(this.#editingPointComponent, this.#previewPointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
+  };
+
+  #replaceEditingPointToPreviewPoint = () => {
+    replace(this.#previewPointComponent, this.#editingPointComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.PREVIEW;
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editingPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editingPointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.PREVIEW) {
+      this.#previewPointComponent.shake();
+      return;
+    }
+
+    this.#editingPointComponent.shake(this.#resetFormState);
+  };
+
+  #resetFormState = () => {
+    this.#editingPointComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.resetView();
+    }
+  };
 }
+
 
