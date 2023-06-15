@@ -1,4 +1,3 @@
-//const SORT_TYPES_DISABLED = ['event', 'offer'];
 const AUTHORIZATION = 'Basic jsggfgdidbdj789';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 

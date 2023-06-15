@@ -57,6 +57,3 @@ offersModel.init().finally(() => {
 });
 
 render(new MenuView(), siteHeaderElement.querySelector('.trip-controls__navigation'));
-
-
-
