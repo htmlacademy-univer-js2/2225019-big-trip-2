@@ -1,4 +1,4 @@
-import { isPointDateFuture, isPointDatePast, isPointDateFuturePast } from './date-point.js';
+import { isPointDateFuture, isPointDatePast, isPointDateFuturePast } from './date-point-utils.js';
 import { FilterType } from '../constant.js';
 
 const filter = {

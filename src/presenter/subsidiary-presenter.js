@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
 import PreviewPointView from '../view/preview-point-view.js';
-import PointView from '../view/main-form-view.js';
+import PointView from '../view/point-view.js';
 import { UserAction, UpdateType } from '../constant.js';
 
 const Mode = {
