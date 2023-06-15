@@ -1,6 +1,6 @@
 import Observable from '../framework/observable.js';
 
-export default class DestModel extends Observable {
+export default class DestinationModel extends Observable {
   #destinations = [];
   #destinationsApiService = null;
   #isSuccessfulLoading = false;

@@ -1,14 +1,14 @@
 import { render, RenderPosition, remove } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointsListView from '../view/list-view.js';
-import NoAdditionalInfoView from '../view/no-additional-infos.js';
+import NoAdditionalInfoView from '../view/no-additional-infos-view.js';
 import PointPresenter from './subsidiary-presenter.js';
 import SortingView from '../view/sorting-view.js';
 import NoPointView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointNewPresenter from './new-point-presenter.js';
-import { doSort } from '../util/sort-type.js';
-import { filter } from '../util/util-filter.js';
+import { doSort } from '../utils/sort-type-utils.js';
+import { filter } from '../utils/filter-utils.js';
 import { UpdateType, UserAction, SortType, FilterType, TimeLimit } from '../constant.js';
 import TripInfoPresenter from './info-trip-presenter.js';
 
@@ -43,14 +43,12 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
 
-
     this.#pointNewPresenter = new PointNewPresenter({
       pointListContainer: this.#pointListComponent.element,
       changeData: this.#handleViewAction,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel
     });
-
     this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#offersModel.addObserver(this.#handleModelEvent);
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -82,7 +80,6 @@ export default class BoardPresenter {
   #renderSort = () => {
     this.#sortComponent = new SortingView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
-
     render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
   };
 
@@ -90,7 +87,6 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-
     this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
@@ -147,7 +143,6 @@ export default class BoardPresenter {
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
     }
-
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }

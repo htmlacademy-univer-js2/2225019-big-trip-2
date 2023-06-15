@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
+import { filter } from '../utils/filter-utils.js';
 import FilterView from '../view/filters-view.js';
-import { filter } from '../util/util-filter.js';
 import { FilterType, UpdateType } from '../constant.js';
 
 export default class FilterPresenter {
@@ -17,7 +17,6 @@ export default class FilterPresenter {
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
-
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
