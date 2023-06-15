@@ -1,10 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { getDateTime } from '../util/date-point.js';
+import { PointType, PointTypeDescription } from '../constant.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
-import { getDateTime } from '../util/date-point.js';
-import { PointType, PointTypeDescription } from '../constant.js';
 
 const BLANK_POINT = {
   basePrice: 100,
@@ -23,8 +23,8 @@ const renderDestinationNames = (destinations) => destinations.length === 0 ? '' 
   destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
 
 const renderOffers = (allOffers, checkedOffers, isDisabled) => allOffers.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}
-    " type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(offer.id) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}"
+    type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(offer.id) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="event__offer-label" for="event-offer-${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -50,14 +50,17 @@ const renderDestinationContainer = (destination) => {
                 <div class="event__photos-tape">
                 ${renderDestinationPictures(destination.pictures)}
                 </div>
-              </div> </section>`; }
+              </div>
+  </section>`;
+  }
   return '';
 };
 
 const renderEditingPointDateTemplate = (dateFrom, dateTo, isDisabled) => (
   `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
+    <input class="event__input  event__input--time" id="event-start-time-1"
+    type="text" name="event-start-time" value="${getDateTime(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
     <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateTo)}" ${isDisabled ? 'disabled' : ''}>
@@ -69,10 +72,8 @@ const renderEditingPointTypeTemplate = (currentType, isDisabled) => Object.value
 <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${PointTypeDescription[type]}</label>
 </div>`).join('');
 
-const renderResetButtonTemplate = (isNewPoint, isDisabled, isDeleting) => isNewPoint ? `<button class="event__reset-btn" type="reset"
-${isDisabled ? 'disabled' : ''}>Cancel</button>` : `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+const renderResetButtonTemplate = (isNewPoint, isDisabled, isDeleting) => isNewPoint ? `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>` : `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
   <button class="event__rollup-btn" type="button">`;
-
 const createEditingPointTemplate = (point, destinations, allOffers, isNewPoint) => {
   const {basePrice, type, destination, dateFrom, dateTo, offers, isDisabled, isSaving, isDeleting} = point;
   const allPointTypeOffers = allOffers.find((offer) => offer.type === type);
@@ -94,13 +95,12 @@ const createEditingPointTemplate = (point, destinations, allOffers, isNewPoint) 
             </fieldset>
           </div>
         </div>
-
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-${destination}">
           ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-${destination}
-          " type="text" name="event-destination" value="${destinationData ? he.encode(destinationData.name) : ''}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--destination" id="event-destination-${destination}" type="text" name="event-destination"
+          value="${destinationData ? he.encode(destinationData.name) : ''}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list-1">
             ${renderDestinationNames(destinations)}
           </datalist>
@@ -111,7 +111,8 @@ const createEditingPointTemplate = (point, destinations, allOffers, isNewPoint) 
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"
+          value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         ${renderResetButtonTemplate(isNewPoint, isDisabled, isDeleting)}
@@ -144,7 +145,6 @@ export default class PointView extends AbstractStatefulView {
     this.#offersByType = this.#offers.find((offer) => offer.type === this._state.type);
     this._restoreHandlers();
   }
-
   removeElement = () => {
     super.removeElement();
 
@@ -178,31 +178,6 @@ export default class PointView extends AbstractStatefulView {
     );
   };
 
-  static parsePointToState = (point) => ({...point,
-    dateTo: dayjs(point.dateTo).toDate(),
-    dateFrom: dayjs(point.dateFrom).toDate(),
-    isDisabled: false,
-    isSaving: false,
-    isDeleting: false,
-  });
-
-  static parseStateToPoint = (state) => {
-    const point = {...state};
-    delete point.isDisabled;
-    delete point.isSaving;
-    delete point.isDeleting;
-    return point;
-  };
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
-  };
-
-  setResetClickHandler = (callback) => {
-    this._callback.resetClick = callback;
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formResetClickHandler);
-  };
-
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setOuterHandlers();
@@ -213,13 +188,6 @@ export default class PointView extends AbstractStatefulView {
   #pointDateFromChangeHandler = ([userDate]) => {
     this.updateElement({
       dateFrom: userDate,
-    });
-  };
-
-  #pointPriceChangeHandler = (evt) => {
-    evt.preventDefault();
-    this._setState({
-      basePrice: Number(evt.target.value),
     });
   };
 
@@ -234,6 +202,13 @@ export default class PointView extends AbstractStatefulView {
     const destination = this.#destinations.find((dest) => dest.name === evt.target.value);
     this.updateElement({
       destination: destination.id,
+    });
+  };
+
+  #pointPriceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: Number(evt.target.value),
     });
   };
 
@@ -262,23 +237,24 @@ export default class PointView extends AbstractStatefulView {
     });
   };
 
-  #formSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.formSubmit(PointView.parseStateToPoint(this._state));
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#pointTypeChangeHandler);
+    this.element.querySelector('.event__input').addEventListener('change', this.#pointDestinationChangeHandler);
+
+    if (this.#offersByType && this.#offersByType.offers.length > 0)  {
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
+    }
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#pointPriceChangeHandler);
   };
 
-  #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-list').addEventListener('change',
-      this.#pointTypeChangeHandler);
-    this.element.querySelector('.event__input').addEventListener('change',
-      this.#pointDestinationChangeHandler);
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
+  };
 
-    if(this.#offersByType && this.#offersByType.offers.length > 0)  {
-      this.element.querySelector('.event__available-offers').addEventListener('change',
-        this.#offersChangeHandler);
-    }
-    this.element.querySelector('.event__input--price').addEventListener('change',
-      this.#pointPriceChangeHandler);
+  setResetClickHandler = (callback) => {
+    this._callback.resetClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formResetClickHandler);
   };
 
   #setOuterHandlers = () => {
@@ -289,9 +265,30 @@ export default class PointView extends AbstractStatefulView {
     this.setResetClickHandler(this._callback.resetClick);
   };
 
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(PointView.parseStateToPoint(this._state));
+  };
+
   #formResetClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.resetClick(PointView.parseStateToPoint(this._state));
+  };
+
+  static parsePointToState = (point) => ({...point,
+    dateTo: dayjs(point.dateTo).toDate(),
+    dateFrom: dayjs(point.dateFrom).toDate(),
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = {...state};
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+    return point;
   };
 
   #setDatepickerFrom = () => {
@@ -323,5 +320,4 @@ export default class PointView extends AbstractStatefulView {
       );
     }
   };
-
 }

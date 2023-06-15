@@ -1,5 +1,4 @@
-const SORT_TYPES_DISABLED = ['event', 'offer'];
-const AUTHORIZATION = 'Basic jsggfgdidbdj789';
+const AUTHORIZATION = 'Basic hIfpbpd204fpubd6';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const UserAction = {
@@ -40,13 +39,13 @@ const SortTypeDescription = {
 const PointType = {
   TAXI: 'taxi',
   BUS: 'bus',
-  DRIVE: 'drive',
-  FLIGHT: 'flight',
   TRAIN: 'train',
   SHIP: 'ship',
-  SIGHTSEEING: 'sightseeing',
-  RESTAURANT: 'restaurant',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
   CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant'
 };
 
 const PointTypeDescription = {
@@ -56,9 +55,9 @@ const PointTypeDescription = {
   [PointType.SHIP]: 'Ship',
   [PointType.DRIVE]: 'Drive',
   [PointType.FLIGHT]: 'Flight',
-  [PointType.RESTAURANT]: 'Restaurant',
+  [PointType.CHECK_IN]: 'Check-in',
   [PointType.SIGHTSEEING]: 'Sightseeing',
-  [PointType.CHECK_IN]: 'Check-in'
+  [PointType.RESTAURANT]: 'Restaurant'
 };
 
 const ApiServiceResponseMethod = {
@@ -75,4 +74,4 @@ const TimeLimit = {
 
 
 export { UserAction, UpdateType, FilterType, SortType, SortTypeDescription, PointType, PointTypeDescription,
-  SORT_TYPES_DISABLED, ApiServiceResponseMethod, AUTHORIZATION, END_POINT, TimeLimit };
+  ApiServiceResponseMethod, AUTHORIZATION, END_POINT, TimeLimit };

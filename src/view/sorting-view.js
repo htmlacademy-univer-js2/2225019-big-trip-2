@@ -1,7 +1,8 @@
-import { SortType, SortTypeDescription } from '../constant.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { SortType, SortTypeDescription } from '../constant.js';
 
 const DISABLED_SORT_TYPES = [SortType.EVENT, SortType.OFFER];
+
 const createSortingTemplate = (currentSortType) => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 ${Object.values(SortType).map((sortType) => `<div class="trip-sort__item  trip-sort__item--${sortType}">
     <input ${currentSortType === sortType ? 'checked' : ''} data-sort-type=${sortType} id="sort-${sortType}"
