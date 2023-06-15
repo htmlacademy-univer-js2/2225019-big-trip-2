@@ -1,12 +1,6 @@
 import dayjs from 'dayjs';
 import { SortType } from '../constant';
 
-const doSort = {
-  [SortType.DAY]: (points) => points.sort(daySortPoint),
-  [SortType.PRICE]: (points) => points.sort(priceSortPoint),
-  [SortType.TIME]: (points) => points.sort(timeSortPoint),
-};
-
 const daySortPoint = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 const priceSortPoint = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
@@ -17,8 +11,10 @@ const timeSortPoint = (pointA, pointB) => {
   return timePointB - timePointA;
 };
 
+const doSort = {
+  [SortType.DAY]: (points) => points.sort(daySortPoint),
+  [SortType.PRICE]: (points) => points.sort(priceSortPoint),
+  [SortType.TIME]: (points) => points.sort(timeSortPoint),
+};
+
 export { doSort };
-
-
-
-
