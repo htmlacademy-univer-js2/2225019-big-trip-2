@@ -11,7 +11,8 @@ const renderOffers = (allOffers, checkedOffers) => {
     if (checkedOffers.includes(offer.id)) {
       result = `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>
 &plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
-    }});
+    }
+  });
   return result;
 };
 
@@ -75,16 +76,6 @@ export default class PreviewPointView extends AbstractView {
     return createPreviewPointTemplate(this.#point, this.#destination, this.#offers);
   }
 
-  setFavoriteClickHandler = (callback) => {
-    this._callback.favoriteClick = callback;
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
-  };
-
-  #favoriteClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  };
-
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
@@ -93,5 +84,15 @@ export default class PreviewPointView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }

@@ -1,5 +1,5 @@
-import {humanizeDateTime } from '../util/date-point.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeDateTime } from '../util/date-point.js';
 
 const renderRouteTrip = (points, destinations) => {
   if (points.length === 0) {
@@ -16,8 +16,8 @@ const renderRouteTrip = (points, destinations) => {
     const endPoint = destinations.find((item) => item.id === routeWithoutRepeats[routeWithoutRepeats.length - 1]);
     return `${startPoint.name} &mdash; ... &mdash; ${endPoint.name}`;
   }
-  return routeWithoutRepeats.map((destination) => `${destinations.find((item) => item.id === destination).name}`).join(' &mdash; ');
-
+  return routeWithoutRepeats.map((destination) =>
+    `${destinations.find((item) => item.id === destination).name}`).join(' &mdash; ');
 };
 const renderDatesTrip = (points) => {
   if (points.length === 0) {
@@ -45,18 +45,6 @@ const getPricePointOffers = (point, offers) => {
   return pricePointOffers;
 };
 
-const createTripInfoTemplate = (points, destinations, offers) => {
-  if (destinations.length === 0 || offers.length === 0) {
-    return '';
-  }
-  return  `<div class="trip-info"><div class="trip-info__main">
-  <h1 class="trip-info__title">${renderRouteTrip(points, destinations)}</h1>
-  <p class="trip-info__dates">${renderDatesTrip(points)}</p></div>
-<p class="trip-info__cost">
-  ${renderTotalPriceTrip(points, offers)}
-</p></div>`;
-};
-
 const renderTotalPriceTrip = (points, offers) => {
   if (points.length === 0) {
     return '';
@@ -67,6 +55,20 @@ const renderTotalPriceTrip = (points, offers) => {
     totalPrice += getPricePointOffers(point, offers);
   });
   return `Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>`;
+};
+
+const createTripInfoTemplate = (points, destinations, offers) => {
+  if (destinations.length === 0 || offers.length === 0) {
+    return '';
+  }
+  return  `<div class="trip-info"><div class="trip-info__main">
+  <h1 class="trip-info__title">${renderRouteTrip(points, destinations)}</h1>
+  <p class="trip-info__dates">${renderDatesTrip(points)}</p>
+</div>
+<p class="trip-info__cost">
+  ${renderTotalPriceTrip(points, offers)}
+</p>
+</div>`;
 };
 
 export default class TripInfoView extends AbstractView {
